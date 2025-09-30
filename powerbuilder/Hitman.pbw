@@ -1,0 +1,6 @@
+Save Format v3.0(19990112)
+@begin Targets
+ 0 "hitman_edgev_1.pbt";
+@end;
+DefaultTarget "hitman_edgev_1.pbt";
+DefaultRemoteTarget "hitman_edgev_1.pbt";
