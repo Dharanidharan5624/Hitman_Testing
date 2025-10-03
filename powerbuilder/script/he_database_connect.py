@@ -6,7 +6,7 @@ import traceback
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 try:
-    from HE_Error_Logs import log_error_to_db
+    from HE_error_logs import log_error_to_db
 except ImportError:
     def log_error_to_db(file_name, error_description, created_by="system", env="dev"):
         print(f"[ERROR LOGGER FAILED] {error_description}")
@@ -18,11 +18,17 @@ def load_config():
     if _config:
         return _config
 
-    config_path = os.path.join("C:\HitmanEdge\config\config.ini")
+    # Get the root drive of the script's location
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    drive = os.path.splitdrive(script_dir)[0]  # Extracts the drive (e.g., 'C:')
+    
+    # Construct the config file path as \HitmanEdge\powerbuilder\config\config.ini from the root of the drive
+    config_path = os.path.join(drive, os.sep, "HitmanEdge", "powerbuilder", "config", "config.ini")
+    
     if not os.path.exists(config_path):
         msg = f"Config file not found: {config_path}"
         print(msg)
-        log_error_to_db("he_database_connect.py", msg)
+        log_error_to_db("HE_database_connect.py", msg)
         sys.exit(1)
 
     config = configparser.ConfigParser()
@@ -31,7 +37,7 @@ def load_config():
     if 'database' not in config:
         msg = "Missing [database] section in config.ini"
         print(msg)
-        log_error_to_db("he_database_connect.py", msg)
+        log_error_to_db("HE_database_connect.py", msg)
         sys.exit(1)
 
     _config = config
@@ -50,7 +56,7 @@ def get_connection(env='dev'):
     if not env_key or env_key not in db:
         msg = f"Invalid environment: {env}"
         print(msg)
-        log_error_to_db("he_database_connect.py", msg)
+        log_error_to_db("HE_database_connect.py", msg)
         sys.exit(1)
 
     try:
@@ -67,6 +73,5 @@ def get_connection(env='dev'):
     except mysql.connector.Error as err:
         trace = traceback.format_exc()
         print(f"[ERROR] DB Connection failed: {err}")
-        log_error_to_db("he_database_connect.py", trace, created_by="DB_CONNECT", env=env)
+        log_error_to_db("HE_database_connect.py", trace, created_by="DB_CONNECT", env=env)
         sys.exit(1)
-

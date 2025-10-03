@@ -11,7 +11,7 @@ import numpy as np
 from datetime import datetime
 from mplfinance.original_flavor import candlestick_ohlc
 
-from HE_Error_Logs import log_error_to_db
+from HE_error_logs import log_error_to_db
 
 
 us_eastern = timezone("America/New_York")

@@ -24,7 +24,7 @@ def clean_dataframe(df):
 def fetch_fifo_data():
     try:
         conn = mysql.connector.connect(
-            host="localhost", user="root", password="123", database="hitman_edgev_1"
+            host="localhost", user="Hitman", password="Hitman@123", database="hitman_edge_dev"
         )
         cursor = conn.cursor()
         cursor.execute("""
@@ -282,7 +282,7 @@ if not df.empty:
 
     try:
         conn = mysql.connector.connect(
-            host="localhost", user="root", password="123", database="hitman_edgev_1"
+            host="localhost", user="Hitman", password="Hitman", database="Hitman@123"
         )
         cursor = conn.cursor()
 

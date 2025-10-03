@@ -3,10 +3,10 @@ import traceback
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from HE_Database_Connect import get_connection
+from HE_database_connect import get_connection
 
 try:
-    from HE_Database_Connect import get_connection
+    from HE_database_connect import get_connection
 except ImportError as e:
     print(f"[ERROR] Cannot import get_connection: {e}")
     sys.exit(1)

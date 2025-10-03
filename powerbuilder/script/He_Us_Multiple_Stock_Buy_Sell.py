@@ -6,7 +6,7 @@ from pytz import timezone
 import matplotlib.dates as mdates
 from decimal import Decimal, ROUND_HALF_UP
 from ib_insync import *
-from HE_Error_Logs import log_error_to_db 
+from HE_error_logs import log_error_to_db 
 
 
 us_eastern = timezone("US/Eastern")

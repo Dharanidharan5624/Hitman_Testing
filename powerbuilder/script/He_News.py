@@ -8,9 +8,9 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from HE_Database_Connect import get_connection
+from HE_database_connect import get_connection
 
-from HE_Error_Logs import log_error_to_db 
+from HE_error_logs import log_error_to_db 
 
 openai.api_key = "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"
 

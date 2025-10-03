@@ -4,8 +4,8 @@ from datetime import date, timedelta
 import time
 import traceback
 
-from HE_Database_Connect import get_connection
-from HE_Error_Logs import  log_error_to_db
+from HE_database_connect import get_connection
+from HE_error_logs import  log_error_to_db
 
 API_KEY = '6a2e7b8388724ec7b7420c74d3bb2844'
 symbol = 'AAPL'

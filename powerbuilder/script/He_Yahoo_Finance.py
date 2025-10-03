@@ -3,7 +3,7 @@ from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from HE_Error_Logs import log_error_to_db 
+from HE_error_logs import log_error_to_db 
 
 
 try:

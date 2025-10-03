@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 from tabulate import tabulate
 import mysql.connector
-from HE_Database_Connect import get_connection # Assuming this exists and works
+from HE_database_connect import get_connection # Assuming this exists and works
 import os
 import traceback
-from HE_Error_Logs import log_error_to_db 
+from HE_error_logs import log_error_to_db 
 
 # print(dir(yf)) # You can keep or remove this, it's just for debugging yfinance methods
 

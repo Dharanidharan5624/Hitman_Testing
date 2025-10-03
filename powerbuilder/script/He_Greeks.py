@@ -5,8 +5,8 @@ from datetime import datetime
 import mysql.connector
 import traceback
 
-from HE_Database_Connect import get_connection
-from HE_Error_Logs import log_error_to_db  # Error logger
+from HE_database_connect import get_connection
+from HE_error_logs import log_error_to_db  # Error logger
 
 # === Black-Scholes Greeks Calculator ===
 def black_scholes_greeks(S, K, T, r, sigma, option_type='call'):

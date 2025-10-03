@@ -2,8 +2,8 @@ from collections import deque
 from tabulate import tabulate
 import mysql.connector
 import traceback
-from HE_Database_Connect import get_connection
-from HE_Error_Logs import log_error_to_db  
+from HE_database_connect import get_connection
+from HE_error_logs import log_error_to_db  
 
 def process_buy(holdings, cumulative_buy_cost, one, balance_qty, date, ticker, buy_qty, price):
     total_cost = buy_qty * price

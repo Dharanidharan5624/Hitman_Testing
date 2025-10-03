@@ -1,7 +1,7 @@
 import yfinance as yf
 import numpy as np
-from HE_Database_Connect import get_connection
-from HE_Error_Logs import log_error_to_db 
+from HE_database_connect import get_connection
+from HE_error_logs import log_error_to_db 
 
 
 indices = {

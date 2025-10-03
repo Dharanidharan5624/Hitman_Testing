@@ -4,8 +4,8 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 import yfinance as yf
 from tabulate import tabulate
-from HE_Database_Connect import get_connection
-from HE_Error_Logs import log_error_to_db
+from HE_database_connect import get_connection
+from HE_error_logs import log_error_to_db
 
 # ------------------ Pandas Display Settings ------------------
 pd.set_option('display.max_rows', None)
