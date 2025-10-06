@@ -23,7 +23,7 @@ def load_config():
     drive = os.path.splitdrive(script_dir)[0]  # Extracts the drive (e.g., 'C:')
     
     # Construct the config file path as \HitmanEdge\powerbuilder\config\config.ini from the root of the drive
-    config_path = os.path.join(drive, os.sep, "HitmanEdge", "powerbuilder", "config", "config.ini")
+    config_path = os.path.join(drive + os.sep, "HitmanEdge", "powerbuilder", "config", "config.ini")
     
     if not os.path.exists(config_path):
         msg = f"Config file not found: {config_path}"
