@@ -4,7 +4,6 @@ from datetime import date, timedelta
 import time
 import traceback
 
-from HE_database_connect import get_connection
 from HE_error_logs import  log_error_to_db
 
 API_KEY = '6a2e7b8388724ec7b7420c74d3bb2844'
@@ -63,13 +62,13 @@ while True:
                   
 
                 except Exception as inner_err:
-                    log_error_to_db("he_newsapi_org.py", traceback.format_exc(), created_by="sentiment_loop")
+                    log_error_to_db("HE_newsapi_org.py", traceback.format_exc(), created_by="sentiment_loop")
         else:
             print(" No articles found for yesterday/today or an error occurred.")
 
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_newsapi_org.py", error_description, created_by="sentiment_loop")
+        log_error_to_db("HE_newsapi_org.py", error_description, created_by="sentiment_loop")
         print(f" Error fetching or processing news: {e}")
 
     time.sleep(interval_seconds)

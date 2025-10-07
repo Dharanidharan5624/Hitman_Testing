@@ -3,21 +3,23 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def send_welcome_email(user_email, user_name):
-    sender_email = "dhineshapihitman@gmail.com"
-    password ="yiof ntnc xowc gpbp"  # Gmail App Password
+    sender_email = "kgaba.dataservices@gmail.com"
+    password ="qouj rgbd nizh zljo" 
 
     # === Email Setup ===
-    subject = "Welcome Hitman !"
+    subject = "Welcome Hitman!"
     body = f"""
     Hi {user_name},
 
-    🎉 Welcome to Hitman application! 
-    We're excited to have you on board.
+    Welcome to the [Your Site Name] community! We're excited to have you join us.
+    This email confirms your registration and gives you access to everything [Your Site Name] has to offer. 
 
-    If you have any questions, feel free to reach out to our support team.
+    To get started, log in to your account here: [Link to your site's login page] 
 
-    Best regards,  
-    The Team
+    If you have any questions or need assistance, please reply to kgaba.dataservices@gmail.com  
+
+    Thanks again,
+    Hitman Team 
     """
 
     msg = MIMEMultipart()
@@ -44,7 +46,7 @@ def send_welcome_email(user_email, user_name):
 
 
 # === Example: When a new user registers ===
-new_user_email = "dhineshapihitman@shravtek.com"
+new_user_email = "ila@shravtek.com"
 new_user_name = "dharanidharan"
 
 send_welcome_email(new_user_email, new_user_name)

@@ -32,7 +32,7 @@ class EarningsAnalyzer:
                 print(f"API request failed with status code {response.status_code}")
         except Exception as e:
             print(f"Error fetching earnings data: {e}")
-            log_error_to_db("he_summarize_earings_report.py", str(e), created_by="fetch_earnings_data")
+            log_error_to_db("HE_summarize_earning_report.py", str(e), created_by="fetch_earnings_data")
         return None
 
     def generate_summary(self):
@@ -50,14 +50,14 @@ class EarningsAnalyzer:
                     f"Cost of Revenue     : ${self.data.get('costOfRevenue', 'N/A'):,}\n"
                 )
             except Exception as e:
-                log_error_to_db("he_summarize_earings_report.py", str(e), created_by="generate_summary")
+                log_error_to_db("HE_summarize_earning_report.py", str(e), created_by="generate_summary")
         return "No data available."
 
     def analyze_sentiment(self):
         try:
             return self.vader.polarity_scores(self.summary)
         except Exception as e:
-            log_error_to_db("he_summarize_earings_report.py", str(e), created_by="analyze_sentiment")
+            log_error_to_db("HE_summarize_earning_report.py", str(e), created_by="analyze_sentiment")
             return {"compound": 0, "pos": 0, "neu": 1, "neg": 0}
 
     def sentiment_label(self, compound_score):
@@ -79,7 +79,7 @@ class EarningsAnalyzer:
             cursor = conn.cursor()
 
             insert_query = """
-            INSERT INTO earnings_data (
+            INSERT INTO he_earnings_data (
                 symbol, date, revenue, net_income, eps, operating_income, gross_profit,
                 operating_expenses, cost_of_revenue, sentiment_compound, sentiment_pos,
                 sentiment_neu, sentiment_neg
@@ -107,7 +107,7 @@ class EarningsAnalyzer:
             print(f"Data for {self.symbol} successfully saved to database.")
         except Exception as e:
             print(f"Error saving data to database: {e}")
-            log_error_to_db("he_summarize_earings_report.py", str(e), created_by="save_to_database")
+            log_error_to_db("HE_summarize_earning_report.py", str(e), created_by="save_to_database")
         finally:
             try:
                 cursor.close()
@@ -139,7 +139,7 @@ class EarningsAnalyzer:
 
             self.save_to_database()
         except Exception as e:
-            log_error_to_db("he_summarize_earings_report.py", str(e), created_by="display_results")
+            log_error_to_db("HE_summarize_earning_report.py", str(e), created_by="display_results")
 
 if __name__ == "__main__":
     analyzer = EarningsAnalyzer(symbol, url)

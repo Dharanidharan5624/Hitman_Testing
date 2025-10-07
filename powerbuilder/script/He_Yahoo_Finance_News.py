@@ -9,7 +9,7 @@ try:
     nltk.download('vader_lexicon')
     sid = SentimentIntensityAnalyzer()
 except Exception as e:
-    log_error_to_db("he_yahoo_finance_news.py", str(e), created_by="nltk_setup")
+    log_error_to_db("HE_yahoo_finance_news.py", str(e), created_by="nltk_setup")
     exit(" NLTK setup failed.")
 
 
@@ -18,7 +18,7 @@ def analyze_sentiment(text):
         scores = sid.polarity_scores(text)
         return scores
     except Exception as e:
-        log_error_to_db("he_yahoo_finance_news.py", str(e), created_by="analyze_sentiment")
+        log_error_to_db("HE_yahoo_finance_news.py", str(e), created_by="analyze_sentiment")
         return {}
 
 url = (
@@ -30,12 +30,12 @@ try:
     response = requests.get(url, timeout=10)
     data = response.json()
 except Exception as e:
-    log_error_to_db("he_yahoo_finance_news.py", str(e), created_by="api_request")
+    log_error_to_db("HE_yahoo_finance_news.py", str(e), created_by="api_request")
     exit(" API request failed.")
 
 
 if "feed" not in data:
-    log_error_to_db("he_yahoo_finance_news.py", str(data), created_by="invalid_api_response")
+    log_error_to_db("HE_yahoo_finance_news.py", str(data), created_by="invalid_api_response")
     print("No news feed found. API response:", data)
     exit()
 
@@ -46,7 +46,7 @@ for article in data.get("feed", [])[:6]:
         dt = datetime.strptime(raw_time, "%Y%m%dT%H%M%S")
         formatted_date = dt.strftime("%Y/%m/%d")
     except Exception as e:
-        log_error_to_db("he_yahoo_finance_news.py", str(e), created_by="datetime_parse")
+        log_error_to_db("HE_yahoo_finance_news.py", str(e), created_by="datetime_parse")
         formatted_date = "Invalid Date"
 
     try:
@@ -86,5 +86,5 @@ for article in data.get("feed", [])[:6]:
             print()
 
     except Exception as e:
-        log_error_to_db("he_yahoo_finance_news.py", str(e), created_by="process_article")
+        log_error_to_db("HE_yahoo_finance_news.py", str(e), created_by="process_article")
         continue
