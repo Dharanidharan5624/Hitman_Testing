@@ -85,7 +85,7 @@ def fifo_tracker(transactions, cursor, db):
 
     if insert_queries:
         cursor.executemany("""
-            INSERT INTO avgs (
+            INSERT INTO he_avgs (
                 date, ticker, action, qty, balance_qty, price, sale_price, sell_profit,
                 total_cost, sell_total_profit, cumulative_buy_cost, cumulative_total_qty, avg_cost
             )
@@ -109,11 +109,11 @@ def store_data_in_db(data):
         return result_table
     except mysql.connector.Error as err:
         error_description = traceback.format_exc()
-        log_error_to_db("he_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
+        log_error_to_db("HE_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
         return None
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
+        log_error_to_db("HE_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
         return None
 
 def fetch_fifo_data():
@@ -121,10 +121,10 @@ def fetch_fifo_data():
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT activity_date, instrument, tran_code, quantity, price
-            FROM stock_transactions
-            WHERE instrument IS NOT NULL
-            ORDER BY instrument ASC;
+            SELECT date, ticker, trade_type, quantity, price
+            FROM he_stock_transaction
+            WHERE ticker IS NOT NULL
+            ORDER BY ticker ASC;
         """)
         rows = cursor.fetchall()
         cursor.close()
@@ -136,11 +136,11 @@ def fetch_fifo_data():
         return [row + (None,) for row in rows]
     except mysql.connector.Error as err:
         error_description = traceback.format_exc()
-        log_error_to_db("he_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
+        log_error_to_db("HE_average_cost_scenarios.py", error_description, created_by="fifo_module", env="dev")
         return []
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_average_cost_scenarios.py", error_description="Database Error: {err}", created_by="fifo_module", env="dev")
+        log_error_to_db("HE_average_cost_scenarios.py", error_description="Database Error: {err}", created_by="fifo_module", env="dev")
         return []
 
 if __name__ == "__main__":

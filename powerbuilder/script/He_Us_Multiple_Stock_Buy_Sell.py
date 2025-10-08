@@ -28,7 +28,7 @@ try:
     ib.reqMarketDataType(1)
     print(" Connected to IBKR")
 except Exception as e:
-    log_error_to_db("he_us_multiple_stock_buy_shell.py", str(e), created_by="connect_IB")
+    log_error_to_db("HE_US_multiple_stock_buy_sell.py", str(e), created_by="connect_IB")
     print(f" IBKR Connection Failed: {e}")
     exit(1)
 
@@ -45,7 +45,7 @@ def get_live_price_from_yf():
         print(" No live price data from yfinance.")
         return None
     except Exception as e:
-        log_error_to_db("he_us_multiple_stock_buy_shell.py", str(e), created_by="get_live_price_from_yf")
+        log_error_to_db("HE_US_multiple_stock_buy_sell.py", str(e), created_by="get_live_price_from_yf")
         return None
 
 def place_order(action, quantity, price):
@@ -54,7 +54,7 @@ def place_order(action, quantity, price):
         ib.placeOrder(contract, order)
         print(f" {action} order placed: {quantity} shares at ${price:.2f}")
     except Exception as e:
-        log_error_to_db("he_us_multiple_stock_buy_shell.py", str(e), created_by="place_order")
+        log_error_to_db("HE_US_multiple_stock_buy_sell.py", str(e), created_by="place_order")
         print(f" Failed to place order: {e}")
 
 
@@ -115,7 +115,7 @@ def plot_fib_chart(symbol):
 
         return fib_levels
     except Exception as e:
-        log_error_to_db("he_us_multiple_stock_buy_shell.py", str(e), created_by="plot_fib_chart")
+        log_error_to_db("HE_US_multiple_stock_buy_sell.py", str(e), created_by="plot_fib_chart")
         return {}
 
 
@@ -207,5 +207,5 @@ try:
 
         plt.pause(refresh_interval)
 except Exception as e:
-    log_error_to_db("he_us_multiple_stock_buy_shell.py", str(e), created_by="main_loop")
+    log_error_to_db("HE_US_multiple_stock_buy_sell.py", str(e), created_by="main_loop")
     print(f" Unexpected error in loop: {e}")

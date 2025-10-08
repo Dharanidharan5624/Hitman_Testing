@@ -9,7 +9,7 @@ def fetch_all_stock_data():
         conn = get_connection()
         cursor = conn.cursor()
 
-        query = "SELECT * FROM stock_transactions"
+        query = "SELECT * FROM he_stock_transactions"
         cursor.execute(query)
 
         columns = [desc[0] for desc in cursor.description]
@@ -22,7 +22,7 @@ def fetch_all_stock_data():
 
     except Exception as err:
         print(f"Error: {err}")
-        log_error_to_db("investment_calculator.py", str(err), created_by="fetch_all_stock_data")
+        log_error_to_db("HE_summary.py", str(err), created_by="fetch_all_stock_data")
         return None, None
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ class InvestmentCalculator:
             self.fetch_stock_transactions()
         except Exception as e:
             print(f"[Init Error] {e}")
-            log_error_to_db("he_summary.py", str(e), created_by="__init__")
+            log_error_to_db("HE_summary.py", str(e), created_by="__init__")
 
     def fetch_stock_transactions(self):
         """Fetch and organize stock transactions grouped by instrument."""
@@ -52,7 +52,7 @@ class InvestmentCalculator:
 
             query = """
             SELECT LOWER(instrument), tran_code, quantity, price, activity_date
-            FROM stock_transactions
+            FROM he_stock_transactions
             ORDER BY activity_date ASC
             """
             cursor.execute(query)
@@ -71,7 +71,7 @@ class InvestmentCalculator:
 
         except Exception as err:
             print(f"[Fetch Transactions Error] {err}")
-            log_error_to_db("investment_calculator.py", str(err), created_by="fetch_stock_transactions")
+            log_error_to_db("HE_summary.py", str(err), created_by="fetch_stock_transactions")
 
     def calculate(self):
         table_data = []
@@ -109,7 +109,7 @@ class InvestmentCalculator:
 
         except Exception as e:
             print(f"[Calculation Error] {e}")
-            log_error_to_db("he_summary.py", str(e), created_by="calculate")
+            log_error_to_db("HE_summary.py", str(e), created_by="calculate")
             return pd.DataFrame(columns=["Instrument", "Total Investment", "Total Quantity", "Average Price"])
 
     def insert_data_into_db(self, df):
@@ -119,7 +119,7 @@ class InvestmentCalculator:
 
             for _, row in df.iterrows():
                 query = """
-                INSERT INTO summary (instrument, total_investment, total_quantity, average_price)
+                INSERT INTO he_summary (instrument, total_investment, total_quantity, average_price)
                 VALUES (%s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
                     total_investment = VALUES(total_investment),
@@ -138,7 +138,7 @@ class InvestmentCalculator:
 
         except Exception as e:
             print(f"[Insert DB Error] {e}")
-            log_error_to_db("he_summary.py", str(e), created_by="insert_data_into_db")
+            log_error_to_db("HE_summary.py", str(e), created_by="insert_data_into_db")
 
 
 if __name__ == "__main__":
@@ -149,5 +149,5 @@ if __name__ == "__main__":
         print(" Investment Summary:\n")
         print(tabulate(result_df, headers="keys", tablefmt="grid", showindex=False))
     except Exception as e:
-        log_error_to_db("he_summary.py", str(e), created_by="main")
+        log_error_to_db("He_summary.py", str(e), created_by="main")
         print("[Main Error] Program failed to execute.")

@@ -28,7 +28,7 @@ def fetch_stock_news(stock_symbol):
         return data.get("news", [])
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_news.py", error_description, created_by="news_module")
+        log_error_to_db("HE_news.py", error_description, created_by="news_module")
         print(f" Error fetching news for {stock_symbol}: {e}")
         return []
 
@@ -52,7 +52,7 @@ Summary:
         return response['choices'][0]['message']['content'].strip()
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_news.py", error_description, created_by="news_module")
+        log_error_to_db("HE_news.py", error_description, created_by="news_module")
         print(f" Error generating summary: {e}")
         return "Summary not available."
 
@@ -61,13 +61,13 @@ def store_news_in_db(stock_symbol, title, summary, link, pub_time):
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO news_articles (stock_symbol, title, summary, link, pub_time)
+            INSERT INTO he_news_articles (stock_symbol, title, summary, link, pub_time)
             VALUES (%s, %s, %s, %s, %s)
         """, (stock_symbol, title, summary, link, pub_time))
         conn.commit()
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_news.py", error_description, created_by="news_module")
+        log_error_to_db("HE_news.py", error_description, created_by="news_module")
         print(f" Database error: {e}")
     finally:
         if 'cursor' in locals():
@@ -109,7 +109,7 @@ def main():
             time.sleep(1)
     except Exception as e:
         error_description = traceback.format_exc()
-        log_error_to_db("he_news.py", error_description, created_by="news_module")
+        log_error_to_db("HE_news.py", error_description, created_by="news_module")
         print(" Unhandled error occurred. Logged to database.")
 
 

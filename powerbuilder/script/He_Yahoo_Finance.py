@@ -10,7 +10,7 @@ try:
     nltk.download('vader_lexicon', quiet=True)
     sid = SentimentIntensityAnalyzer()
 except Exception as e:
-    log_error_to_db("he_yahoo_finance.py", str(e), created_by="nltk_setup")
+    log_error_to_db("HE_yahoo_finance.py", str(e), created_by="nltk_setup")
     exit(" NLTK setup failed.")
 
 
@@ -18,7 +18,7 @@ def analyze_sentiment(text):
     try:
         return sid.polarity_scores(text)
     except Exception as e:
-        log_error_to_db("he_yahoo_finance.py", str(e), created_by="analyze_sentiment")
+        log_error_to_db("HE_yahoo_finance.py", str(e), created_by="analyze_sentiment")
         return {"compound": 0.0}
 
 def sentiment_label(compound_score):
@@ -35,7 +35,7 @@ def fetch_feed(symbol):
         url = f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={symbol}&region=US&lang=en-US"
         return feedparser.parse(url), url
     except Exception as e:
-        log_error_to_db("he_yahoo_finance.py", str(e), created_by="fetch_feed")
+        log_error_to_db("HE_yahoo_finance.py", str(e), created_by="fetch_feed")
         return None, None
 
 
@@ -44,7 +44,7 @@ def extract_tickers_from_url(url):
         parsed = urlparse(url)
         return parse_qs(parsed.query).get("s", ["Unknown"])[0].split(",")
     except Exception as e:
-        log_error_to_db("he_yahoo_finance.py", str(e), created_by="extract_tickers")
+        log_error_to_db("HE_yahoo_finance.py", str(e), created_by="extract_tickers")
         return ["Unknown"]
 
 
@@ -68,7 +68,7 @@ def parse_articles(feed, symbols, limit=7):
             print("-" * 60)
             count += 1
         except Exception as e:
-            log_error_to_db("he_yahoo_finance.py", str(e), created_by="parse_articles")
+            log_error_to_db("HE_yahoo_finance.py", str(e), created_by="parse_articles")
             continue
 
 
@@ -76,7 +76,7 @@ def main():
     symbol = "HIMS" 
     feed, url = fetch_feed(symbol)
     if not feed or not feed.entries:
-        log_error_to_db("rss_news_sentiment.py", f"No feed or entries for {symbol}", created_by="main")
+        log_error_to_db("HE_yahoo_finance.py", f"No feed or entries for {symbol}", created_by="main")
         print(f"No articles found for {symbol}")
         return
 

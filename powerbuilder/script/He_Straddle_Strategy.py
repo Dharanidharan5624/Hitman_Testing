@@ -29,7 +29,7 @@ def connect_ibkr():
             return True
         except Exception as e:
             retry += 1
-            log_error_to_db("he_straddle_stategy.py", str(e), created_by="connect_ibkr")
+            log_error_to_db("HE_straddle_strategy.py", str(e), created_by="connect_ibkr")
             print(f"Connection attempt {retry} failed: {e}")
             time.sleep(5)
     print("Failed to connect to IB API after retries.")
@@ -43,7 +43,7 @@ def store_data_in_db(data):
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        sql = """INSERT INTO options_trading (stock_symbol, stock_price, call_premium, put_premium)
+        sql = """INSERT INTO he_options_trading (stock_symbol, stock_price, call_premium, put_premium)
                  VALUES (%s, %s, %s, %s)"""
         converted_data = [
             tuple(float(x) if isinstance(x, (np.float64, np.float32)) else int(x) if isinstance(x, (np.int64, np.int32)) else x for x in row)
@@ -56,7 +56,7 @@ def store_data_in_db(data):
         print("Options data stored successfully.")
     except mysql.connector.Error as err:
         print(f"MySQL Error: {err}")
-        log_error_to_db("he_straddle_stategy.py", str(err), created_by="store_data_in_db")
+        log_error_to_db("HE_straddle_strategy.py", str(err), created_by="store_data_in_db")
 
 
 def analyze_trend_and_signal(prices, symbol, timestamps):
@@ -74,7 +74,7 @@ def save_trade_to_db(activity_date, process_date, settle_date, instrument, descr
         conn = get_connection()
         cursor = conn.cursor()
         query = """
-            INSERT INTO note (activity_date, process_date, settle_date, 
+            INSERT INTO he_note (activity_date, process_date, settle_date, 
             instrument, description, tran_code, quantity, price, amount) 
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
@@ -91,7 +91,7 @@ def save_trade_to_db(activity_date, process_date, settle_date, instrument, descr
         print("Trade saved to DB.")
     except mysql.connector.Error as err:
         print("MySQL Insert Error:", err)
-        log_error_to_db("he_straddle_stategy.py", str(err), created_by="save_trade_to_db")
+        log_error_to_db("HE_straddle_strategy.py", str(err), created_by="save_trade_to_db")
 
 def get_stock_holding(symbol):
     try:
@@ -105,7 +105,7 @@ def get_stock_holding(symbol):
         return total_qty
     except mysql.connector.Error as err:
         print("MySQL Select Error:", err)
-        log_error_to_db("he_straddle_stategy.py", str(err), created_by="get_stock_holding")
+        log_error_to_db("HE_straddle_strategy.py", str(err), created_by="get_stock_holding")
         return 0
 
 
@@ -127,7 +127,7 @@ def place_ibkr_trade(symbol, description, signal, qty):
             print("Order not filled.")
     except Exception as e:
         print(f"Trade error: {e}")
-        log_error_to_db("he_straddle_stategy.py", str(e), created_by="place_ibkr_trade")
+        log_error_to_db("HE_straddle_strategy.py", str(e), created_by="place_ibkr_trade")
 
 def check_and_trade(symbol, qty):
     try:
@@ -138,7 +138,7 @@ def check_and_trade(symbol, qty):
         else:
             print(f"Already holding {holding} shares of {symbol}. Skipping buy.")
     except Exception as e:
-        log_error_to_db("he_straddle_stategy.py", str(e), created_by="check_and_trade")
+        log_error_to_db("HE_straddle_strategy.py", str(e), created_by="check_and_trade")
 
 
 def show_all_data_and_trade_ibkr():
@@ -168,7 +168,7 @@ def show_all_data_and_trade_ibkr():
         conn.close()
     except mysql.connector.Error as err:
         print("MySQL Error:", err)
-        log_error_to_db("he_straddle_stategy.py", str(err), created_by="show_all_data_and_trade_ibkr")
+        log_error_to_db("HE_straddle_strategy.py", str(err), created_by="show_all_data_and_trade_ibkr")
 
 
 try:

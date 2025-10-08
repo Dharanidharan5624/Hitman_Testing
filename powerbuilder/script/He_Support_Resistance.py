@@ -66,14 +66,14 @@ def to_decimal(val, places=2):
             val = val.item()
         return float(Decimal(str(val)).quantize(Decimal(f'1.{"0"*places}'), rounding=ROUND_HALF_UP))
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="to_decimal")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="to_decimal")
         return 0.0
 
 def localize(df):
     try:
         return df.tz_convert(us_eastern) if df.index.tzinfo else df.tz_localize("UTC").tz_convert(us_eastern)
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="localize")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="localize")
         return df
 
 
@@ -89,7 +89,7 @@ def zoom(event):
         ax.set_ylim([ydata - (ydata - ylim[0]) * scale_factor, ydata + (ylim[1] - ydata) * scale_factor])
         canvas.draw()
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="zoom")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="zoom")
 
 canvas.mpl_connect("scroll_event", zoom)
 
@@ -221,7 +221,7 @@ def fetch_and_plot(preserve_zoom=True):
         canvas.draw()
 
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="fetch_and_plot")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="fetch_and_plot")
 
 
 def pan_left(event=None):
@@ -231,7 +231,7 @@ def pan_left(event=None):
         ax.set_xlim(xlim[0] - delta, xlim[1] - delta)
         canvas.draw()
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="pan_left")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="pan_left")
 
 def pan_right(event=None):
     try:
@@ -240,7 +240,7 @@ def pan_right(event=None):
         ax.set_xlim(xlim[0] + delta, xlim[1] + delta)
         canvas.draw()
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="pan_right")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="pan_right")
 
 # Bindings
 fetch_button.config(command=lambda: fetch_and_plot(preserve_zoom=False))
@@ -254,7 +254,7 @@ def live_updater():
     try:
         fetch_and_plot()
     except Exception as e:
-        log_error_to_db("he_support_resistance.py", str(e), created_by="live_updater")
+        log_error_to_db("HE_support_resistance.py", str(e), created_by="live_updater")
     root.after(100, live_updater)
 
 

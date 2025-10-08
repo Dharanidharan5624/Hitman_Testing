@@ -15,7 +15,7 @@ def get_stock_data(symbol: str):
             raise ValueError(f"No stock data available for {symbol}.")
         return df
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="data_fetch")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="data_fetch")
         return None
 
 def calculate_macd(df):
@@ -26,7 +26,7 @@ def calculate_macd(df):
         df["Signal"] = df["MACD"].ewm(span=9, adjust=False).mean()
         return round(df["MACD"].iloc[-1], 2), round(df["Signal"].iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="macd_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="macd_calc")
         return 0, 0
 
 def calculate_bollinger_bands(df, period=20):
@@ -37,21 +37,21 @@ def calculate_bollinger_bands(df, period=20):
         df["Lower Band"] = df["SMA"] - (2 * df["STD"])
         return round(df["Upper Band"].iloc[-1], 2), round(df["Lower Band"].iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="bollinger_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="bollinger_calc")
         return 0, 0
 
 def calculate_sma(df, period=20):
     try:
         return round(df["Close"].rolling(window=period).mean().iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="sma_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="sma_calc")
         return 0
 
 def calculate_ema(df, period=20):
     try:
         return round(df["Close"].ewm(span=period, adjust=False).mean().iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="ema_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="ema_calc")
         return 0
 
 def calculate_fibonacci_levels(df):
@@ -67,7 +67,7 @@ def calculate_fibonacci_levels(df):
             "Fib 78.6%": round(recent_high - 0.786 * diff, 2),
         }
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="fibonacci_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="fibonacci_calc")
         return {k: 0 for k in ["Fib 23.6%", "Fib 38.2%", "Fib 50.0%", "Fib 61.8%", "Fib 78.6%"]}
 
 def calculate_atr(df, period=14):
@@ -79,7 +79,7 @@ def calculate_atr(df, period=14):
         df["ATR"] = df["TR"].rolling(window=period).mean()
         return round(df["ATR"].iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="atr_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="atr_calc")
         return 0
 
 def calculate_stochastic(df, k_period=14, d_period=3):
@@ -90,7 +90,7 @@ def calculate_stochastic(df, k_period=14, d_period=3):
         df["%D"] = df["%K"].rolling(window=d_period).mean()
         return round(df["%K"].iloc[-1], 2), round(df["%D"].iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="stochastic_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="stochastic_calc")
         return 0, 0
 
 def calculate_rsi(df, period=14):
@@ -104,7 +104,7 @@ def calculate_rsi(df, period=14):
         rsi = 100 - (100 / (1 + rs))
         return round(rsi.iloc[-1], 2)
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="rsi_calc")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="rsi_calc")
         return 0
 
 
@@ -112,7 +112,7 @@ def store_data_in_db(data):
     try:
         conn = get_connection()
         cursor = conn.cursor()
-        sql = """INSERT INTO stocks (symbol, latest_price, macd, signal_macd, boll_upper, boll_lower,
+        sql = """INSERT INTO he_stocks (symbol, latest_price, macd, signal_macd, boll_upper, boll_lower,
                                             atr, volume, stoch_k, stoch_d, sma, ema,
                                             fib_23_6, fib_38_2, fib_50, fib_61, fib_78_6, rsi)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -138,7 +138,7 @@ def store_data_in_db(data):
         conn.close()
         print(" Data stored successfully!")
     except Exception:
-        log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by="db_store")
+        log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by="db_store")
         print(" Database Error - Logged")
 
 if __name__ == "__main__":
@@ -167,7 +167,7 @@ if __name__ == "__main__":
                     fib_levels["Fib 61.8%"], fib_levels["Fib 78.6%"], rsi
                 ])
             except Exception:
-                log_error_to_db("he_option_trading_pull_matrics.py", traceback.format_exc(), created_by=f"{symbol}_loop")
+                log_error_to_db("HE_options_trading_pull_metrics.py", traceback.format_exc(), created_by=f"{symbol}_loop")
 
     headers = [
         "Symbol", "Price", "MACD", "Signal",

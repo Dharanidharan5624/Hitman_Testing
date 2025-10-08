@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from tabulate import tabulate
 import mysql.connector
-from HE_database_connect import get_connection # Assuming this exists and works
+from HE_database_connect import get_connection 
 import os
 import traceback
 from HE_error_logs import log_error_to_db 
@@ -298,7 +298,7 @@ def store_data_in_db(data):
     try:
         cursor = conn.cursor()
 
-        sql = """INSERT INTO stocks (symbol, latest_price, sma, macd, signal_macd, adx, pe_ratio, pb_ratio, ps_ratio, peg_ratio, ev_ebitda, gross_margin, net_margin, op_margin, roa, roe, eps_growth, yoy_growth, operating_cash_flow, current_ratio, quick_ratio, de_ratio, icr, asset_turnover, inventory_turnover, dso, insider_ownership, inst_ownership)
+        sql = """INSERT INTO he_stocks_new (symbol, latest_price, sma, macd, signal_macd, adx, pe_ratio, pb_ratio, ps_ratio, peg_ratio, ev_ebitda, gross_margin, net_margin, op_margin, roa, roe, eps_growth, yoy_growth, operating_cash_flow, current_ratio, quick_ratio, de_ratio, icr, asset_turnover, inventory_turnover, dso, insider_ownership, inst_ownership)
                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                  ON DUPLICATE KEY UPDATE
                     latest_price = VALUES(latest_price),

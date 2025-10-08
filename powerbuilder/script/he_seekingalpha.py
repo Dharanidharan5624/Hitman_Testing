@@ -18,7 +18,7 @@ def analyze_sentiment(text):
         scores = sid.polarity_scores(text)
         return scores
     except Exception as e:
-        log_error_to_db("he_seekingalpha.py", str(e), created_by="analyze_sentiment")
+        log_error_to_db("HE_seekingalpha.py", str(e), created_by="analyze_sentiment")
         return {}
 
 def store_article(symbols, title, summary, pub_time, link, sentiment_dict):
@@ -26,13 +26,13 @@ def store_article(symbols, title, summary, pub_time, link, sentiment_dict):
         conn = get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT COUNT(*) FROM news_articles WHERE link = %s", (link,))
+        cursor.execute("SELECT COUNT(*) FROM he_news_articles WHERE link = %s", (link,))
         article_count = cursor.fetchone()[0]
 
         if article_count == 0:
             sentiment_json = json.dumps(sentiment_dict)
             insert_query = """
-                INSERT INTO news_articles (stock_symbol, title, summary, pub_time, link, sentiment)
+                INSERT INTO he_news_articles (stock_symbol, title, summary, pub_time, link, sentiment)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
             symbols_str = ','.join(symbols)
@@ -47,7 +47,7 @@ def store_article(symbols, title, summary, pub_time, link, sentiment_dict):
 
     except Exception as e:
         print(" DB Error:", e)
-        log_error_to_db("he_seekingalpha.py", str(e), created_by="store_article")
+        log_error_to_db("HE_seekingalpha.py", str(e), created_by="store_article")
 
 
 def fetch_article_details(article_id):
@@ -84,10 +84,10 @@ def fetch_article_details(article_id):
         else:
             msg = f"Failed to fetch article {article_id}. Status code: {res.status_code}"
             print(msg)
-            log_error_to_db("news_sentiment.py", msg, created_by="fetch_article_details")
+            log_error_to_db("HE_seekingalpha.py", msg, created_by="fetch_article_details")
 
     except Exception as e:
-        log_error_to_db("he_seekingalpha.py", str(e), created_by="fetch_article_details")
+        log_error_to_db("HE_seekingalpha.py", str(e), created_by="fetch_article_details")
 
 def fetch_latest_news(limit=5):
     try:
@@ -113,13 +113,13 @@ def fetch_latest_news(limit=5):
             except ValueError as e:
                 msg = f"Error parsing response JSON: {e}"
                 print(msg)
-                log_error_to_db("news_sentiment.py", msg, created_by="fetch_latest_news")
+                log_error_to_db("HE_seekingalpha.py", msg, created_by="fetch_latest_news")
         else:
             msg = f"Failed to fetch article list. Status code: {res.status_code}"
             print(msg)
-            log_error_to_db("news_sentiment.py", msg, created_by="fetch_latest_news")
+            log_error_to_db("HE_seekingalpha.py", msg, created_by="fetch_latest_news")
     except Exception as e:
-        log_error_to_db("he_seekingalpha.py", str(e), created_by="fetch_latest_news")
+        log_error_to_db("HE_seekingalpha.py", str(e), created_by="fetch_latest_news")
 
 
 if __name__ == "__main__":
@@ -132,5 +132,5 @@ if __name__ == "__main__":
         except Exception as e:
             msg = f"Runtime Error: {e}"
             print(msg)
-            log_error_to_db("he_seekingalpha.py", msg, created_by="main_loop")
+            log_error_to_db("HE_seekingalpha.py", msg, created_by="main_loop")
             time.sleep(600)
