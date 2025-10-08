@@ -38,7 +38,7 @@ def fetch_index_data(symbol):
 
     except Exception as e:
         print(f" Error fetching data for {symbol}: {e}")
-        log_error_to_db("HE_symbol_close_price.py", str(e), created_by="fetch_index_data")
+        log_error_to_db("he_symbol_close_price.py", str(e), created_by="fetch_index_data")
         return None, None
 
 def create_table_if_not_exists(cursor):
@@ -53,7 +53,7 @@ def create_table_if_not_exists(cursor):
         """)
     except Exception as e:
         print(f" Error creating table: {e}")
-        log_error_to_db("HE_symbol_close_price.py", str(e), created_by="create_table_if_not_exists")
+        log_error_to_db("he_symbol_close_price.py", str(e), created_by="create_table_if_not_exists")
 
 def store_index_data():
     try:
@@ -79,7 +79,7 @@ def store_index_data():
                     print(f" Inserted: {name} ({symbol}) → Close: {close_price}, Change: {percent_change}%")
                 except Exception as insert_err:
                     print(f" Insert error for {symbol}: {insert_err}")
-                    log_error_to_db("HE_symbol_close_price.py", str(insert_err), created_by="store_index_data - insert")
+                    log_error_to_db("index_data_store.py", str(insert_err), created_by="store_index_data - insert")
             else:
                 print(f" Skipped: {name} ({symbol}) – Invalid or missing data")
 
@@ -88,7 +88,7 @@ def store_index_data():
 
     except Exception as e:
         print(f" Error storing index data: {e}")
-        log_error_to_db("HE_symbol_close_price.py", str(e), created_by="store_index_data")
+        log_error_to_db("he_symbol_close_price.py", str(e), created_by="store_index_data")
 
     finally:
         if 'cursor' in locals():

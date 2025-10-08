@@ -6,8 +6,9 @@ import yfinance as yf
 from tabulate import tabulate
 import mysql.connector
 import math
-from HE_database_connect import get_connection
-from HE_error_logs import log_error_to_db  # Import error logging function
+
+
+# ---------- Utility Functions ----------
 
 def safe_round(val, digits=2):
     try:
@@ -22,7 +23,9 @@ def clean_dataframe(df):
 
 def fetch_fifo_data():
     try:
-        conn = get_connection()
+        conn = mysql.connector.connect(
+            host="localhost", user="Hitman", password="Hitman@123", database="hitman_edge_dev"
+        )
         cursor = conn.cursor()
         cursor.execute("""
             SELECT ticker, date, trade_type, quantity, price, platform, created_by
@@ -37,9 +40,7 @@ def fetch_fifo_data():
         return rows
 
     except mysql.connector.Error as err:
-        error_message = f"Database Error in fetch_fifo_data: {err}"
-        print(error_message)
-        log_error_to_db(error_message, type(err).__name__, "HE_portfilio_master_table.py", 1)
+        print(f"Database Error: {err}")
         return []
 
 def safe_get(df, keys):
@@ -56,10 +57,7 @@ def get_index_return(ticker):
         start_price = hist['Close'].iloc[0]
         end_price = hist['Close'].iloc[-1]
         return round((end_price - start_price) / start_price * 100, 2)
-    except Exception as e:
-        error_message = f"Error fetching index return for {ticker}: {e}"
-        print(error_message)
-        log_error_to_db(error_message, type(e).__name__, "HE_portfilio_master_table.py", 1)
+    except:
         return None
 
 # ---------- Index Returns ----------
@@ -86,16 +84,14 @@ for t in fetch_fifo_data():
 
     try:
         qty = Decimal(qty) if qty is not None else Decimal('0')
-    except (InvalidOperation, TypeError) as e:
+    except (InvalidOperation, TypeError):
         print(f"⚠️ Invalid quantity for row: {t}")
-        log_error_to_db(f"Invalid quantity for row {t}: {e}", type(e).__name__, "HE_portfilio_master_table.py", created_by or 1)
         qty = Decimal('0')
 
     try:
         price = Decimal(price) if price is not None else Decimal('0')
-    except (InvalidOperation, TypeError) as e:
+    except (InvalidOperation, TypeError):
         print(f"⚠️ Invalid price for row: {t}")
-        log_error_to_db(f"Invalid price for row {t}: {e}", type(e).__name__, "HE_portfilio_master_table.py", created_by or 1)
         price = Decimal('0')
 
     if not date_obj:
@@ -124,11 +120,9 @@ for ticker, txns in grouped.items():
         hist = stock.history(period="260d")
         if hist.empty or 'Close' not in hist:
             print(f"❌ Skipping {ticker} — No valid historical data.")
-            log_error_to_db(f"No valid historical data for {ticker}", "DataError", "HE_portfilio_master_table.py", txns[0][6] or 1)
             continue
     except Exception as e:
         print(f"❌ Skipping {ticker} — Error fetching history: {e}")
-        log_error_to_db(f"Error fetching history for {ticker}: {e}", type(e).__name__, "HE_portfilio_master_table.py", txns[0][6] or 1)
         continue
 
     ema_50 = safe_round(hist['Close'].ewm(span=50, adjust=False).mean().iloc[-1])
@@ -141,7 +135,6 @@ for ticker, txns in grouped.items():
         category = info.get('sector', 'Unknown')
     except Exception as e:
         print(f"⚠️ Failed to fetch info for {ticker}: {e}")
-        log_error_to_db(f"Failed to fetch stock info for {ticker}: {e}", type(e).__name__, "HE_portfilio_master_table.py", txns[0][6] or 1)
         current_price = Decimal('0')
         category = "Unknown"
         info = {}
@@ -151,7 +144,6 @@ for ticker, txns in grouped.items():
             date = datetime.strptime(date_str, "%Y-%m-%d")
         except Exception as e:
             print(f"Invalid date format: {date_str} in {symbol} — {e}")
-            log_error_to_db(f"Invalid date format {date_str} in {symbol}: {e}", type(e).__name__, "HE_portfilio_master_table.py", created_by or 1)
             continue
 
         if action == 'buy':
@@ -206,7 +198,6 @@ for ticker, txns in grouped.items():
 
     except Exception as e:
         print(f"⚠️ Financial data missing for {ticker}: {e}")
-        log_error_to_db(f"Financial data missing for {ticker}: {e}", type(e).__name__, "HE_portfilio_master_table.py", txns[0][6] or 1)
         net_income = equity = total_revenue = current_assets = current_liabilities = total_debt = None
         inventory = 0
         fcf = None
@@ -234,7 +225,7 @@ for ticker, txns in grouped.items():
         "total_cost": safe_round(total_cost),
         "current_price": safe_round(current_price),
         "unrealized_gain_loss": safe_round(unrealized),
-        "realized_gain_loss": safe_round(realized_gain_loss),
+        "relized_gain_loss": safe_round(realized_gain_loss),
         "first_buy_age": first_buy_age,
         "avg_age_days": round(average_age, 1) if isinstance(average_age, float) else average_age,
         "platform": platform_map[ticker],
@@ -246,8 +237,8 @@ for ticker, txns in grouped.items():
         "100_day_ema": ema_100,
         "200_day_ema": ema_200,
         "sp_500_ya": sp500_return,
-        "nasdaq_ya": nasdaq_return,
-        "russell_1000_ya": russell1000_return,
+        "nashdaq_ya": nasdaq_return,
+        "russel_1000_ya": russell1000_return,
         "pe_ratio": pe_ratio,
         "peg_ratio": peg_ratio,
         "roe": roe,
@@ -258,6 +249,8 @@ for ticker, txns in grouped.items():
         "revenue_growth": safe_round(fwd_rev_growth * 100) if isinstance(fwd_rev_growth, (float, int)) else None,
         "earnings_accuracy": safe_round(surprise_pct * 100) if isinstance(surprise_pct, (float, int)) else None,
         "created_by": created_by
+  
+
     })
 
 # ---------- Create DataFrame and Insert ----------
@@ -273,10 +266,10 @@ if not df.empty:
     # Fill any missing columns
     required_columns = [
         "ticker", "Category", "quantity", "avg_cost", "position_size", "total_cost", "current_price",
-        "unrealized_gain_loss", "realized_gain_loss", "first_buy_age", "avg_age_days", "platform",
+        "unrealized_gain_loss", "relized_gain_loss", "first_buy_age", "avg_age_days", "platform",
         "industry_pe", "current_pe", "price_sales_ratio", "price_book_ratio",
         "50_day_ema", "100_day_ema", "200_day_ema",
-        "sp_500_ya", "nasdaq_ya", "russell_1000_ya",
+        "sp_500_ya", "nashdaq_ya", "russel_1000_ya",
         "pe_ratio", "peg_ratio", "roe", "net_profit_margin", "current_ratio", "debt_equity", "fcf_yield",
         "revenue_growth", "earnings_accuracy", "created_by"
     ]
@@ -288,26 +281,28 @@ if not df.empty:
     df = clean_dataframe(df)
 
     try:
-        conn = get_connection()
+        conn = mysql.connector.connect(
+            host="localhost", user="Hitman", password="Hitman", database="Hitman@123"
+        )
         cursor = conn.cursor()
 
         query = """
             INSERT INTO he_portfolio_master (
                 ticker, Category, quantity, avg_cost, position_size, total_cost, current_price,
-                unrealized_gain_loss, realized_gain_loss, first_buy_age, avg_age_days, platform,
+                unrealized_gain_loss, relized_gain_loss, first_buy_age, avg_age_days, platform,
                 industry_pe, current_pe, price_sales_ratio, price_book_ratio,
                 `50_day_ema`, `100_day_ema`, `200_day_ema`,
-                sp_500_ya, nasdaq_ya, russell_1000_ya,
+                sp_500_ya, nashdaq_ya, russel_1000_ya,
                 pe_ratio, peg_ratio, roe, net_profit_margin, current_ratio, debt_equity, fcf_yield,
                 revenue_growth, earnings_accuracy,
                 created_by
             )
             VALUES (
                 %(ticker)s, %(Category)s, %(quantity)s, %(avg_cost)s, %(position_size)s, %(total_cost)s, %(current_price)s,
-                %(unrealized_gain_loss)s, %(realized_gain_loss)s, %(first_buy_age)s, %(avg_age_days)s, %(platform)s,
+                %(unrealized_gain_loss)s, %(relized_gain_loss)s, %(first_buy_age)s, %(avg_age_days)s, %(platform)s,
                 %(industry_pe)s, %(current_pe)s, %(price_sales_ratio)s, %(price_book_ratio)s,
                 %(50_day_ema)s, %(100_day_ema)s, %(200_day_ema)s,
-                %(sp_500_ya)s, %(nasdaq_ya)s, %(russell_1000_ya)s,
+                %(sp_500_ya)s, %(nashdaq_ya)s, %(russel_1000_ya)s,
                 %(pe_ratio)s, %(peg_ratio)s, %(roe)s, %(net_profit_margin)s, %(current_ratio)s, %(debt_equity)s, %(fcf_yield)s,
                 %(revenue_growth)s, %(earnings_accuracy)s,
                 %(created_by)s
@@ -319,9 +314,8 @@ if not df.empty:
         print("\n✅ Data inserted into `he_portfolio_master` successfully.")
 
     except mysql.connector.Error as err:
-        error_message = f"MySQL Insertion Error: {err}"
-        print(error_message)
-        log_error_to_db(error_message, type(err).__name__, "HE_portfilio_master_table.py", 1)
+        print(f"\n❌ MySQL Insertion Error: {err}")
+
     finally:
         cursor.close()
         conn.close()

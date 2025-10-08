@@ -44,7 +44,7 @@ def process_fifo(transactions):
             quantity = Decimal(t['quantity'])
             price = Decimal(t['price'])
         except InvalidOperation:
-            log_error_to_db("HE_portfilio.py", f"Invalid transaction skipped: {t}")
+            log_error_to_db("HE_Portfolio.py", f"Invalid transaction skipped: {t}")
             continue
 
         trade_type = t['trade_type'].lower()
@@ -88,7 +88,7 @@ def fetch_all_user_ids():
         conn.close()
         return user_ids
     except Exception as err:
-        log_error_to_db("HE_portfilio.py", str(err))
+        log_error_to_db("HE_Portfolio.py", str(err))
         return []
 
 def fetch_fifo_data(created_by):
