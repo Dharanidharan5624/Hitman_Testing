@@ -25,10 +25,10 @@ company_cache = {}
 
 EXCLUDE_KEYWORDS = ["fund", "trust", "etf", "reit", "insurance", "life", "portfolio"]
 
-sender_email = "dhineshapihitman@gmail.com"
-receiver_email = "dharanidharan@shravtek.com"
+sender_email = "ila@shravtek.com"
+receiver_email = "dharanidharan@shravtek.com,dinesh@shravtek.com,kgaba.dataservices@gmail.com,sujit@shravtek.com ,avinashgabadatasharing@gmail.com,shreeram@shravtek.com"
 subject = "Earnings Calendar Report"
-app_password = "yiof ntnc xowc gpbp"
+app_password = "evte bupb ivnq hsyh"
 
 def convert_hour(hour_code):
     if not hour_code:

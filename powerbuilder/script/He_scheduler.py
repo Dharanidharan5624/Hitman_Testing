@@ -18,11 +18,11 @@ if len(sys.argv) != 6:
     print("Usage: python scheduler.py <job_name> <start_time> <frequency> <schedule_type> <created_by>")
     sys.exit(1)
     
-job_name = "HE_Greeks"
-start_time = "14:15:12"
-schedule_frequency = "Daily"
-schedule_type = "TimeBased"
-created_by = 3
+job_name = sys.argv[1]
+start_time = sys.argv[2]
+schedule_frequency = sys.argv[3].lower()
+schedule_type = sys.argv[4].title()
+created_by = int(sys.argv[5])
 
 print(f"✅ Job Name: {job_name}")
 print(f"✅ Start Time: {start_time}")

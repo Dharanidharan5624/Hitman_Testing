@@ -43,5 +43,8 @@ if __name__ == "__main__":
         email = sys.argv[1]
         user_name = " ".join(sys.argv[2:])  # Handles full names with spaces
         send_welcome_email(email, user_name)
+        print("Welcome email function executed.")
+        print(f"Email: {email}")
+        print(f"User Name: {user_name}")
     else:
         print("Usage: python send_mail.py <email> <user_name>")
